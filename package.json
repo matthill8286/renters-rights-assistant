@@ -1,0 +1,32 @@
+{
+  "name": "renters-rights-assistant",
+  "version": "0.1.0",
+  "description": "MCP server and Claude plugin that checks letting agency tenancies against the Renters Rights Act 2025 (England) and drafts fixes for approval.",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "start:http": "node dist/server.js --http",
+    "dev": "tsx src/server.ts",
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.10",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "private": true,
+  "type": "module",
+  "bin": {
+    "renters-rights-mcp": "dist/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
