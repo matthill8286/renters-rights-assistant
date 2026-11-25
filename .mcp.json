@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "renters-rights": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/server.js"],
+      "env": {
+        "REAPIT_CLIENT_ID": "${REAPIT_CLIENT_ID:-}",
+        "REAPIT_CLIENT_SECRET": "${REAPIT_CLIENT_SECRET:-}",
+        "REAPIT_CUSTOMER_ID": "${REAPIT_CUSTOMER_ID:-}",
+        "AGENCY_NAME": "${AGENCY_NAME:-}"
+      }
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "agencyId": "DEMO",
+  "agencyName": "Oakfield Lettings (demo data)",
+  "properties": [
+    { "id": "P1", "address": "12 Harborne Road, Birmingham", "postcode": "B15 3AA", "nation": "England", "region": "West Midlands" },
+    { "id": "P2", "address": "Flat 4, 88 Mill Lane, Leeds", "postcode": "LS1 4HT", "nation": "England", "region": "Yorkshire and the Humber" },
+    { "id": "P3", "address": "3 Rose Court, Coventry", "postcode": "CV1 2GT", "nation": "England", "region": "West Midlands" },
+    { "id": "P4", "address": "27 Station Street, Bristol", "postcode": "BS1 6QF", "nation": "England", "region": "South West" },
+    { "id": "P5", "address": "9 Albion Terrace, Manchester", "postcode": "M14 5RT", "nation": "England", "region": "North West" },
+    { "id": "P6", "address": "41 Castle Street, Cardiff", "postcode": "CF10 1BS", "nation": "Wales" },
+    { "id": "P7", "address": "2 Park View, Wolverhampton", "postcode": "WV1 4QR", "nation": "England", "region": "West Midlands" }
+  ],
+  "landlords": [
+    { "id": "L1", "name": "Priya Shah", "email": "priya.shah@example.com" },
+    { "id": "L2", "name": "Tom Hughes", "email": "tom.hughes@example.com", "registrationNumber": "RYRP-000123" },
+    { "id": "L3", "name": "Greenway Homes Ltd", "email": "lettings@greenway.example.com" }
+  ],
+  "tenants": [
+    { "id": "C1", "name": "Amy Clarke", "email": "amy.clarke@example.com" },
+    { "id": "C2", "name": "Ben Okafor", "email": "ben.okafor@example.com" },
+    { "id": "C3", "name": "Chloe Davies", "email": "chloe.davies@example.com" },
+    { "id": "C4", "name": "Dan Murphy" },
+    { "id": "C5", "name": "Ella Novak", "email": "ella.novak@example.com" },
+    { "id": "C6", "name": "Faisal Khan", "email": "faisal.khan@example.com" },
+    { "id": "C7", "name": "Grace Lee", "email": "grace.lee@example.com" },
+    { "id": "C8", "name": "Harry Evans", "email": "harry.evans@example.com" }
+  ],
+  "tenancies": [
+    {
+      "id": "T1", "propertyId": "P1", "landlordId": "L1", "tenantIds": ["C1", "C2"], "status": "current",
+      "startDate": "2024-09-01", "endDate": "2025-08-31", "recordedType": "assuredShorthold", "hadWrittenAgreement": true,
+      "rent": 1250, "rentFrequency": "monthly", "depositAmount": 1440, "depositProtected": true,
+      "rentChanges": [
+        { "effectiveDate": "2025-09-01", "previousRent": 1200, "newRent": 1250, "method": "agreement", "noticeServedDate": "2025-07-15" },
+        { "effectiveDate": "2026-07-01", "previousRent": 1250, "newRent": 1325, "method": "section13", "noticeServedDate": "2026-05-20", "planned": false }
+      ],
+      "petRequests": [],
+      "documents": [
+        { "id": "D1", "kind": "tenancyAgreement", "name": "AST 2024" },
+        { "id": "D2", "kind": "informationSheet2026", "name": "RRA Information Sheet", "servedDate": "2026-05-20", "servedOnTenantIds": ["C1"] },
+        { "id": "D3", "kind": "depositPrescribedInformation", "name": "Deposit prescribed information" }
+      ]
+    },
+    {
+      "id": "T2", "propertyId": "P2", "landlordId": "L2", "tenantIds": ["C3"], "status": "current",
+      "startDate": "2026-06-01", "endDate": "2027-05-31", "hadWrittenAgreement": true,
+      "rent": 950, "rentFrequency": "monthly", "advertisedRent": 900, "rentInAdvance": 1900,
+      "depositAmount": 1090, "depositProtected": true,
+      "rentChanges": [], "petRequests": [],
+      "documents": [{ "id": "D4", "kind": "tenancyAgreement", "name": "Tenancy agreement" }]
+    },
+    {
+      "id": "T3", "propertyId": "P3", "landlordId": "L1", "tenantIds": ["C4"], "status": "current",
+      "startDate": "2021-03-01", "recordedType": "assuredPeriodic", "hadWrittenAgreement": false,
+      "rent": 175, "rentFrequency": "weekly", "depositAmount": 0, "arrears": 2400,
+      "rentChanges": [
+        { "effectiveDate": "2026-04-01", "previousRent": 165, "newRent": 175, "method": "agreement", "noticeServedDate": "2026-02-20" },
+        { "effectiveDate": "2027-01-05", "previousRent": 175, "newRent": 190, "method": "section13", "noticeServedDate": "2026-11-20", "planned": true }
+      ],
+      "petRequests": [{ "id": "PR1", "receivedDate": "2026-10-10", "description": "a small dog" }],
+      "documents": []
+    },
+    {
+      "id": "T4", "propertyId": "P4", "landlordId": "L2", "tenantIds": ["C5"], "status": "current",
+      "startDate": "2026-08-15", "recordedType": "assuredPeriodic", "hadWrittenAgreement": true,
+      "rent": 1400, "rentFrequency": "monthly", "advertisedRent": 1400, "rentInAdvance": 1400,
+      "depositAmount": 1615, "depositProtected": true,
+      "rentChanges": [],
+      "petRequests": [{ "id": "PR2", "receivedDate": "2026-11-01", "description": "a cat" }],
+      "documents": [
+        { "id": "D5", "kind": "writtenStatementOfTerms", "name": "Written statement of terms", "servedDate": "2026-08-15", "servedOnTenantIds": ["C5"] },
+        { "id": "D6", "kind": "depositPrescribedInformation", "name": "Deposit prescribed information" }
+      ]
+    },
+    {
+      "id": "T5", "propertyId": "P5", "landlordId": "L3", "tenantIds": ["C6", "C7"], "status": "current",
+      "startDate": "2023-01-10", "recordedType": "assuredPeriodic", "hadWrittenAgreement": true,
+      "rent": 1100, "rentFrequency": "monthly", "depositAmount": 1269, "depositProtected": false,
+      "rentChanges": [],
+      "petRequests": [{ "id": "PR3", "receivedDate": "2026-06-01", "description": "two rabbits", "respondedDate": "2026-06-20", "decision": "refused" }],
+      "documents": [
+        { "id": "D7", "kind": "tenancyAgreement", "name": "AST 2023" },
+        { "id": "D8", "kind": "informationSheet2026", "name": "RRA Information Sheet", "servedDate": "2026-05-12", "servedOnTenantIds": ["C6", "C7"] }
+      ]
+    },
+    {
+      "id": "T6", "propertyId": "P6", "landlordId": "L3", "tenantIds": ["C8"], "status": "current",
+      "startDate": "2025-02-01", "endDate": "2026-01-31", "hadWrittenAgreement": true,
+      "rent": 850, "rentFrequency": "monthly", "rentChanges": [], "petRequests": [], "documents": []
+    },
+    {
+      "id": "T7", "propertyId": "P7", "landlordId": "L3", "tenantIds": ["C8"], "status": "ended",
+      "startDate": "2019-05-01", "endDate": "2024-04-30", "hadWrittenAgreement": true,
+      "rent": 700, "rentFrequency": "monthly", "rentChanges": [], "petRequests": [], "documents": []
+    }
+  ]
+}

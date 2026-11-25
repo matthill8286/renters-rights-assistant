@@ -1,0 +1,5 @@
+{
+  "name": "renters-rights-assistant",
+  "version": "0.1.0",
+  "description": "Checks a letting agency's tenancies against the Renters' Rights Act 2025 (England) and drafts fixes for a person to approve."
+}

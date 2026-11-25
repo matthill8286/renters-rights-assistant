@@ -1,0 +1,11 @@
+{
+  "name": "renters-rights-assistant",
+  "owner": { "name": "Matt" },
+  "plugins": [
+    {
+      "name": "renters-rights-assistant",
+      "source": "./",
+      "description": "Renters' Rights Act compliance checks and drafts for letting agents."
+    }
+  ]
+}
