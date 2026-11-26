@@ -17,10 +17,8 @@ import type {
   DocumentKind,
   Landlord,
   Nation,
-  PetRequest,
   Property,
   Region,
-  RentChange,
   RentFrequency,
   Tenancy,
   TenancyDocument,
@@ -28,6 +26,8 @@ import type {
 } from "../domain.js";
 import type { ReapitClient } from "./client.js";
 import type { DataSource } from "../data/source.js";
+import { DEFAULT_DOCUMENT_KEYWORDS, chunked, documentKindFromName, nationFromPostcode, type RraFacts } from "../crm/shared.js";
+export { DEFAULT_DOCUMENT_KEYWORDS };
 
 export interface ReapitAddress {
   buildingName?: string;
@@ -76,16 +76,7 @@ export interface ReapitTenancy {
 }
 
 /** Compliance facts we store against the tenancy ourselves. */
-export interface TenancyRraMetadata {
-  hadWrittenAgreement?: boolean;
-  advertisedRent?: number;
-  rentInAdvance?: number;
-  arrears?: number;
-  rentChanges?: RentChange[];
-  petRequests?: PetRequest[];
-  /** Service records keyed by document id: which tenants, which date. */
-  served?: Record<string, { date?: string; tenantIds?: string[] }>;
-}
+export type TenancyRraMetadata = RraFacts;
 
 export interface ReapitRelationship {
   associatedType?: string;
@@ -102,25 +93,10 @@ export interface ReapitDocument {
   created?: string;
 }
 
-/**
- * Reapit document type ids vary by agency configuration. Map an agency's own
- * type ids or name keywords onto our kinds. Defaults match by name keyword.
- */
-export const DEFAULT_DOCUMENT_KEYWORDS: [RegExp, DocumentKind][] = [
-  [/information sheet/i, "informationSheet2026"],
-  [/written statement/i, "writtenStatementOfTerms"],
-  [/(written )?summary of terms/i, "writtenSummaryOfTerms"],
-  [/prescribed information/i, "depositPrescribedInformation"],
-  [/deposit (protection )?certificate|dps|tds|mydeposits/i, "depositProtectionCertificate"],
-  [/section 13|form 4a/i, "section13Notice"],
-  [/section 8|form 3a/i, "section8Notice"],
-  [/tenancy agreement|\bast\b/i, "tenancyAgreement"],
-];
 
+/** Reapit document type ids vary by agency, so match on the document name. */
 export function documentKind(d: ReapitDocument, keywords = DEFAULT_DOCUMENT_KEYWORDS): DocumentKind {
-  const name = d.name ?? "";
-  for (const [re, kind] of keywords) if (re.test(name)) return kind;
-  return "other";
+  return documentKindFromName(d.name, keywords);
 }
 
 const FREQ: Record<string, RentFrequency> = {
@@ -152,11 +128,7 @@ function mapStatus(s?: string): Tenancy["status"] {
 export function guessNation(p: ReapitProperty): Nation {
   const meta = p.metadata?.rra?.nation;
   if (meta) return meta;
-  const pc = (p.address?.postcode ?? "").trim().toUpperCase();
-  if (pc.startsWith("BT")) return "Northern Ireland";
-  if (/^(CF|SA|NP|LL|LD)\d/.test(pc)) return "Wales";
-  if (/^(EH|G\d|AB|DD|KY|PH|FK|KW|IV|PA|HS|ZE|ML|TD|DG|KA)/.test(pc)) return "Scotland";
-  return "England";
+  return nationFromPostcode(p.address?.postcode);
 }
 
 export function mapProperty(p: ReapitProperty): Property {
@@ -259,8 +231,3 @@ export class ReapitSource implements DataSource {
   }
 }
 
-async function chunked<T>(ids: string[], fetchFn: (ids: string[]) => Promise<T[]>, size = 50): Promise<T[]> {
-  const out: T[] = [];
-  for (let i = 0; i < ids.length; i += size) out.push(...(await fetchFn(ids.slice(i, i + size))));
-  return out;
-}

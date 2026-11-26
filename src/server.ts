@@ -8,16 +8,20 @@ import { createApp } from "./app.js";
 import { CachedSource, FixtureSource, type DataSource } from "./data/source.js";
 import { ReapitClient } from "./reapit/client.js";
 import { ReapitSource } from "./reapit/mapper.js";
+import { ArthurClient } from "./arthur/client.js";
+import { ArthurSource } from "./arthur/mapper.js";
 import { assertIso } from "./dates.js";
 
-function pickSource(): DataSource {
+async function pickSource(): Promise<DataSource> {
+  const arthur = await ArthurClient.fromEnv();
+  if (arthur) return new CachedSource(new ArthurSource(arthur, process.env.AGENCY_NAME));
   const reapit = ReapitClient.fromEnv();
   if (reapit) return new CachedSource(new ReapitSource(reapit, process.env.AGENCY_NAME));
   const fixture = process.env.RRA_FIXTURE ?? fileURLToPath(new URL("../fixtures/demo-agency.json", import.meta.url));
   return new FixtureSource(fixture);
 }
 
-const source = pickSource();
+const source = await pickSource();
 const pinned = process.env.RRA_TODAY ? assertIso(process.env.RRA_TODAY) : undefined;
 const today = pinned ? () => pinned : undefined;
 
