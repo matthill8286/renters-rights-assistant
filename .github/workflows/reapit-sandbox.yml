@@ -1,0 +1,35 @@
+name: reapit-sandbox-probe
+# Runs the mapper against the Reapit sandbox (SBOX demo data) on demand.
+# Needs repository secrets REAPIT_CLIENT_ID and REAPIT_CLIENT_SECRET.
+on:
+  workflow_dispatch:
+    inputs:
+      sample:
+        description: Records to sample per endpoint
+        default: "10"
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Probe the sandbox
+        env:
+          REAPIT_CLIENT_ID: ${{ secrets.REAPIT_CLIENT_ID }}
+          REAPIT_CLIENT_SECRET: ${{ secrets.REAPIT_CLIENT_SECRET }}
+          REAPIT_CUSTOMER_ID: SBOX
+          PROBE_SAMPLE: ${{ inputs.sample }}
+        run: node dist/tools/sandbox-probe.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: probe-output
+          path: probe-output/
+          if-no-files-found: ignore

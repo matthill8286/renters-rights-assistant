@@ -9,7 +9,8 @@
     "start:http": "node dist/server.js --http",
     "dev": "tsx src/server.ts",
     "test": "node --import tsx --test test/*.test.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "probe": "node dist/tools/sandbox-probe.js"
   },
   "license": "UNLICENSED",
   "dependencies": {
