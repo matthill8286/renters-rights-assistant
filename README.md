@@ -85,6 +85,12 @@ Add to `claude_desktop_config.json`:
 3. Copy `.env.example` to `.env`, fill in the client id and secret, and set `REAPIT_CUSTOMER_ID=SBOX` for the sandbox.
 4. Start the server. With the three Reapit variables set it reads from Reapit instead of the demo data.
 
+### Sandbox probe
+
+`npm run probe` (after `npm run build`) samples raw records from each Reapit endpoint, reports fields the mapper expects but did not find, runs the mapper and the checks, and writes everything to `probe-output/`. It refuses to run against anything but the sandbox (`SBOX`).
+
+You can also run it on GitHub: add `REAPIT_CLIENT_ID` and `REAPIT_CLIENT_SECRET` as repository secrets, then run the **reapit-sandbox-probe** workflow from the Actions tab. The results are uploaded as the `probe-output` artifact.
+
 Before trusting the output, check the field mapping in `src/reapit/mapper.ts` against real sandbox records. Facts Reapit does not hold (pet requests, who was served the Information Sheet, the advertised rent) are read from each tenancy's `metadata.rra` object for now.
 
 ## Layout
@@ -100,6 +106,7 @@ src/
   reapit/mapper.ts     Reapit records → domain model
   app.ts               MCP tools
   server.ts            stdio and HTTP entry point
+  tools/sandbox-probe.ts Reapit sandbox field check
 skills/                Claude plugin skills
 fixtures/              Demo agency data
 test/                  32 tests (node:test)

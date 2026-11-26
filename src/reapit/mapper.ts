@@ -212,11 +212,19 @@ export function mapTenancy(t: ReapitTenancy, tenantIds: string[], docs: ReapitDo
 /** Loads a whole agency from Reapit. Read-only. */
 export class ReapitSource implements DataSource {
   name = "reapit";
-  constructor(private client: ReapitClient, private agencyName = "Your agency") {}
+  constructor(
+    private client: ReapitClient,
+    private agencyName = "Your agency",
+    /** Cap on tenancies loaded, for sandbox probes. Unset loads everything. */
+    private maxTenancies?: number,
+  ) {}
 
   async loadSnapshot(): Promise<AgencySnapshot> {
     const c = this.client;
-    const tenancies = await c.getAll<ReapitTenancy>("/tenancies", { status: [...CURRENT, ...PENDING] });
+    const all = this.maxTenancies
+      ? (await c.get<{ _embedded: ReapitTenancy[] }>("/tenancies", { status: [...CURRENT, ...PENDING], pageSize: Math.min(this.maxTenancies, 100) }))._embedded
+      : await c.getAll<ReapitTenancy>("/tenancies", { status: [...CURRENT, ...PENDING] });
+    const tenancies = this.maxTenancies ? all.slice(0, this.maxTenancies) : all;
 
     const propertyIds = [...new Set(tenancies.map((t) => t.propertyId))];
     const landlordIds = [...new Set(tenancies.map((t) => t.landlordId).filter((x): x is string => !!x))];
