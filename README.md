@@ -2,7 +2,7 @@
 
 An MCP server and Claude plugin for letting agents in England. It checks every tenancy against the Renters' Rights Act 2025, lists what is missing or at risk, and drafts the letter or notice to fix it. A person reviews and sends every draft. Nothing is sent or written back to the CRM.
 
-Status: **prototype (phase 2 of the plan)**. It runs on demo data today. The Reapit connector is written but has not yet been run against the Reapit sandbox.
+Status: **prototype (phase 2 of the plan)**. It runs on demo data today. Connectors for Arthur Online and Reapit are written but have not yet been run against real data.
 
 > This is a screening tool, not legal advice. The rules in `src/rules/legislation.ts` need a solicitor's review before any agency relies on them.
 
@@ -78,6 +78,21 @@ Add to `claude_desktop_config.json`:
 }
 ```
 
+## Connecting Arthur Online
+
+Arthur has no public sandbox, and API credentials are created inside an Arthur account. You need either your own Arthur subscription or a pilot agency willing to create an OAuth application for you.
+
+1. In Arthur: **Settings > Account Settings > OAuth Applications > Add Application**, with callback URL `http://localhost:8765/callback`.
+2. Set `ARTHUR_CLIENT_ID`, `ARTHUR_CLIENT_SECRET`, `ARTHUR_ENTITY_ID` (the account's entity id) and `ARTHUR_TOKEN_FILE` in `.env` (see `.env.example`). Never commit these or the token file.
+3. `npm run build && npm run arthur:auth`, open the printed link and sign in once. Arthur only supports the authorization code flow. The server refreshes the token from then on; if it goes unused for 21 days, sign in again.
+4. Start the server. With the Arthur variables set it reads from Arthur, ahead of Reapit and the demo data.
+
+Mapping: an Arthur **unit** becomes a property, the unit owner (an Arthur **entity**) becomes the landlord, tenancy **assets** are the documents. Facts Arthur does not hold (pet requests, who was served what, the advertised rent) are read from a tenancy custom field named `rra` holding JSON in the same shape as Reapit's `metadata.rra`. A unit custom field `nation` overrides the postcode guess for border properties.
+
+### Arthur probe
+
+Tenancy and tenant field names come from a third-party copy of Arthur's Postman collection and are unconfirmed. `PROBE_CONFIRM=yes npm run probe:arthur` samples a few records and writes `probe-output/arthur-summary.json`: field names and types, status and frequency labels, custom field names and counts. It does not save names, addresses, emails or amounts, so the file is safe to share for fixing the mapper.
+
 ## Connecting Reapit
 
 1. Register on the [Reapit Developer Portal](https://developers.reapit.cloud) and create an app using the **client credentials** flow. The flow cannot be changed later.
@@ -104,17 +119,23 @@ src/
   drafts/templates.ts  Letter and notice drafts
   reapit/client.ts     Reapit Connect auth, paging, rate limits, 429 retries
   reapit/mapper.ts     Reapit records → domain model
+  arthur/client.ts     Arthur OAuth tokens, refresh, paging, 429 retries
+  arthur/mapper.ts     Arthur records → domain model
+  arthur/auth-cli.ts   One-off browser sign-in for Arthur
+  crm/shared.ts        Helpers shared by the CRM mappers
   app.ts               MCP tools
   server.ts            stdio and HTTP entry point
   tools/sandbox-probe.ts Reapit sandbox field check
+  tools/arthur-probe.ts  Arthur field check (names only, no personal data)
 skills/                Claude plugin skills
 fixtures/              Demo agency data
-test/                  32 tests (node:test)
+test/                  40 tests (node:test)
 ```
 
 ## Next steps
 
-- Run the mapper against the Reapit sandbox and fix field names.
+- Run the Arthur probe on a real account (own subscription or pilot agency) and fix field names.
+- Run the mapper against the Reapit sandbox once developer access is sorted.
 - Postgres store for service records and pet requests, fed by Reapit webhooks.
 - Write-back to Reapit (journal entries, documents) behind explicit approval.
 - Solicitor review of `legislation.ts` and the draft wording.

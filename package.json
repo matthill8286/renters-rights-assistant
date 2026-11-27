@@ -10,7 +10,9 @@
     "dev": "tsx src/server.ts",
     "test": "node --import tsx --test test/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "probe": "node dist/tools/sandbox-probe.js"
+    "probe": "node dist/tools/sandbox-probe.js",
+    "arthur:auth": "node dist/arthur/auth-cli.js",
+    "probe:arthur": "node dist/tools/arthur-probe.js"
   },
   "license": "UNLICENSED",
   "dependencies": {
